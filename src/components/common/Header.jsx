@@ -36,7 +36,7 @@ export default function Header() {
               user.firstName +  " " + user.lastName
               }</span>
             <img
-              className="max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px]"
+              className="max-h-[32px] max-w-[32px] rounded-full lg:max-h-[44px] lg:max-w-[44px]"
               src={`${import.meta.env.VITE_SERVER_BASE_URL}/${user.avatar}`}
               alt=""
             />
