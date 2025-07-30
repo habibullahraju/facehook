@@ -5,12 +5,31 @@ import editIcon from '../../assets/icons/edit.svg';
 import deleteIcon from '../../assets/icons/delete.svg';
 import { getTimeCalculate } from '../../utils/getTimeCalculate';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useAuth } from '../../hooks/useAuth';
+import useAxios from '../../hooks/useAxios';
+import { usePosts } from '../../hooks/usePosts';
+import { actions } from '../../actions';
 
 function PostHeader({post}) {
+  const {api}  = useAxios();
+  const {dispatch } = usePosts();
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const {avatarURL} = useAvatar(post)
+  const {auth} = useAuth();
+  const isMe = post?.author?.id === auth?.user?.id;
   const handleOpenMenu = () =>{
     setIsOpenMenu(!isOpenMenu)
+  }
+  const handleDeletePostByID = async(id) =>{
+    dispatch({type: actions.post.DATA_FETCHING});
+    try {
+      const response = await api.delete(`${import.meta.env.VITE_SERVER_BASE_URL}/posts/${id}`)
+      if (response.status === 200) {
+        dispatch({type: actions.post.POST_DELETED, data: id})
+      }
+    } catch (error) {
+      dispatch({type: actions.post.DATA_ERROR, error: error.message})
+    }
   }
     return (
         <header className="flex items-center justify-between gap-4">
@@ -34,16 +53,16 @@ function PostHeader({post}) {
           {/* author info ends */}
           {/* action dot */}
           <div className="relative">
-            <button onClick={handleOpenMenu}>
+            {isMe && <button onClick={handleOpenMenu}>
               <img src={threeDotIcon} alt="3dots of Action" />
-            </button>
+            </button>}
             {/* Action Menus Popup */}
             {isOpenMenu && <div className="action-modal-container">
               <button className="action-menu-item hover:text-lwsGreen">
                 <img src={editIcon} alt="Edit" />
                 Edit
               </button>
-              <button className="action-menu-item hover:text-red-500">
+              <button onClick={()=> handleDeletePostByID(post.id)} className="action-menu-item hover:text-red-500">
                 <img src={deleteIcon} alt="Delete" />
                 Delete
               </button>

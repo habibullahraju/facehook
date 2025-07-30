@@ -33,7 +33,7 @@ export default function LoginForm() {
     } catch (error) {
       setError("root.random", {
         type: "random",
-        message: `Login failed for  Email: ${formData.email}`,
+        message: `Login failed for  Email: ${formData.email, error.message}`,
       });
     }
   };
@@ -70,6 +70,7 @@ export default function LoginForm() {
           id="password"
         />
       </Field>
+      <p className="text-red-500">{errors?.root?.random?.message}</p>
       <Field>
         <button
           className="auth-input bg-lwsGreen font-bold text-deepDark transition-all hover:opacity-90"
@@ -78,7 +79,7 @@ export default function LoginForm() {
           Login
         </button>
       </Field>
-      <p className="text-red-500">{errors?.root?.random?.message}</p>
+      
     </form>
   );
 }
